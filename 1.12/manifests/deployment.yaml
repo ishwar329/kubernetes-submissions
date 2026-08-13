@@ -1,0 +1,25 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: todo-app-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: todo-app
+  template:
+    metadata:
+      labels:
+        app: todo-app
+    spec:
+      volumes:
+        - name: image-storage
+          persistentVolumeClaim:
+            claimName: todo-image-claim
+
+      containers:
+        - name: todo-app
+          image: todo-app:1.12
+          volumeMounts:
+            - name: image-storage
+              mountPath: /app/files
