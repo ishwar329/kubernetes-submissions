@@ -1,0 +1,33 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output
+  template:
+    metadata:
+      labels:
+        app: log-output
+    spec:
+      volumes:
+        - name: shared-storage
+          persistentVolumeClaim:
+            claimName: ping-pong-log-claim
+
+      containers:
+        - name: log-generator
+          image: log-output:1.11
+          command: ["python3", "generator.py"]
+          volumeMounts:
+            - name: shared-storage
+              mountPath: /usr/src/app/files
+
+        - name: log-reader
+          image: log-output:1.11
+          command: ["python3", "reader.py"]
+          volumeMounts:
+            - name: shared-storage
+              mountPath: /usr/src/app/files
