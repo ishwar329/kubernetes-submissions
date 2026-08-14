@@ -1,0 +1,33 @@
+
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: log-output-dep
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: log-output
+  template:
+    metadata:
+      labels:
+        app: log-output
+    spec:
+      volumes:
+        - name: log-storage
+          emptyDir: {}
+
+      containers:
+        - name: log-generator
+          image: log-output:2.1
+          command: ["python3", "generator.py"]
+          volumeMounts:
+            - name: log-storage
+              mountPath: /usr/src/app/files
+
+        - name: log-reader
+          image: log-output:2.1
+          command: ["python3", "reader.py"]
+          volumeMounts:
+            - name: log-storage
+              mountPath: /usr/src/app/files
