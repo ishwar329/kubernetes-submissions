@@ -1,0 +1,7 @@
+FROM python:3.13-slim
+
+WORKDIR /usr/src/app
+
+COPY reader.py generator.py .
+
+CMD ["python3", "reader.py"]
